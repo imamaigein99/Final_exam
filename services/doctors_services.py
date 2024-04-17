@@ -1,4 +1,5 @@
-from schemas.doctors_schema import DoctorsCreate, Doctors, doctors
+from fastapi import HTTPException
+from schemas.doctors_schema import DoctorsCreate, Doctors, doctors, is_available, DoctorsStatus
 
 class DoctorSerivce:
 
@@ -9,6 +10,24 @@ class DoctorSerivce:
             return doctors[id]
         else: 
             return {"ResponseCode": "01", "ResponseMessage": "Doctor Does Not Exist"}
+        
+    @staticmethod
+    def get_doctor_all_active():
+        active_doctors = []
+        for doctor_id, doctor in doctors.items():
+            if doctor.active == DoctorsStatus.OPEN:
+                active_doctors.append(doctor)
+        return active_doctors
+    
+
+    @staticmethod
+    def get_doctor_all_deactive():
+        deactive_doctors = []
+        for doctor_id, doctor in doctors.items():
+            if doctor.active == DoctorsStatus.CLOSED:
+                deactive_doctors.append(doctor)
+        return deactive_doctors
+
 
 
     @staticmethod
@@ -38,11 +57,11 @@ class DoctorSerivce:
             doctor = doctors[id]
         
             # Check the current status of the doctor
-            if doctor.status == "FREE":
+            if doctor.status == is_available.OPEN:
                 # Update the status to "BUSY"
-                doctor.status = "BUSY"
+                doctor.status = is_available.CLOSED
                 return {"ResponseCode": "00", "ResponseMessage": "Doctor Status Updated Successfully"}
-            elif doctor.status == "BUSY":
+            elif doctor.status == is_available.CLOSED:
                 return {"ResponseCode": "02", "ResponseMessage": "Doctor Already in Busy state"}
         else:
             # If the doctor does not exist in the dictionary
@@ -60,11 +79,11 @@ class DoctorSerivce:
             doctor = doctors[id]
         
             # Check the current status of the doctor
-            if doctor.status == "BUSY":
+            if doctor.status == is_available.CLOSED:
                 # Update the status to "BUSY"
-                doctor.status = "FREE"
+                doctor.status = is_available.OPEN
                 return {"ResponseCode": "00", "ResponseMessage": "Doctor Status Updated Successfully"}
-            elif doctor.status == "FREE":
+            elif doctor.status == is_available.OPEN:
                 return {"ResponseCode": "02", "ResponseMessage": "Doctor Already in Free state"}
         else:
             # If the doctor does not exist in the dictionary
@@ -72,6 +91,36 @@ class DoctorSerivce:
 
         # If the code reaches this point, it indicates an internal logic issue
         return {"ResponseCode": "03", "ResponseMessage": "Internal Logic issue"}
+    
+
+    @staticmethod
+    def update_doctors_status(active: DoctorsStatus, doctor_id: int):
+        if doctor_id in doctors: 
+            doctor = doctors[doctor_id]
+            # Check if the user is already in the desired state
+            if active == DoctorsStatus.OPEN and doctor.active == DoctorsStatus.OPEN:
+                return {"ResponseCode": "01", "ResponseMessage": f"Doctor {doctor.name} is already ENABLED"}
+            elif active == DoctorsStatus.CLOSED and doctor.active == DoctorsStatus.CLOSED:
+                    return {"ResponseCode": "01", "ResponseMessage": f"Doctor {doctor.name} is already DISABLED"}
+                # Update the status based on the value of 'active' parameter
+            elif active == DoctorsStatus.OPEN:
+                doctor.active = DoctorsStatus.OPEN
+                return {"ResponseCode": "00", "ResponseMessage": f"Doctor {doctor.name} is now ENABLED"}
+            elif active == DoctorsStatus.CLOSED:
+                doctor.active = DoctorsStatus.CLOSED
+                return {"ResponseCode": "00", "ResponseMessage": f"Doctor {doctor.name} is now DISABLED"}
+            else: 
+                raise ValueError("Invalid value for 'active'. Please provide 'ENABLED' or 'DISABLED'.") 
+        else:
+            return {"ResponseCode": "02", "ResponseMessage": "Doctor does not exist"}
+
+
+
+
+
+
+
+
 
 
 

@@ -6,10 +6,6 @@ app = FastAPI()
 
 app.include_router(router=doctor_router, prefix='/doctors', tags=['doctors'])
 
-@app.get('/home')
-def index():
-    return "welcome onboard"
-
 
 if __name__ == "__main__":
     import uvicorn
