@@ -26,6 +26,13 @@ class DoctorsCreate(BaseModel):
     active: DoctorsStatus = DoctorsStatus.OPEN
 
 
+class DoctorsUpdate(BaseModel):
+    id: int
+    name: str
+    specialization: str
+    phone: str
+
+
 doctors: dict[int, Doctors] = {
     0: Doctors(
         id=0, name='Kunle Elusade', specialization='', phone='08068632113',status= 'FREE', active='ENABLED'),

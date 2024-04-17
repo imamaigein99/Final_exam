@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from schemas.doctors_schema import Doctors, DoctorsCreate, doctors
+from schemas.doctors_schema import Doctors, DoctorsCreate, DoctorsUpdate, doctors
+
 from services.doctors_services import DoctorSerivce
 
 doctor_router = APIRouter()
@@ -46,8 +47,13 @@ def update_doctors_status(active: str, doctor_id : int):
     if active not in ["ENABLED", "DISABLED"]:
         # If the status is not valid, raise an HTTPException with a 400 status code
         raise HTTPException(status_code=400, detail="Invalid status. Please provide 'ENABLED' or 'DISABLED'.")
-    data = DoctorSerivce.update_doctors_status(active, doctor_id) # type: ignore
-    return {'message': 'successful', 'data': data} # type: ignore
+    data = DoctorSerivce.update_doctors_status(active, doctor_id)
+    return {'message': 'successful', 'data': data}
+
+@doctor_router.post('/UpdateStatusByID', status_code=200)
+def update_doctors_by_id(payload: DoctorsUpdate):
+    data = DoctorSerivce.update_doctors_status_id(payload)
+    return {'message': 'successful', 'data': data}
     
 # @doctor_router.delete('/DeleteDoctorByID/{id}', status_code=200)
 # def DeleteDoctorByID(id: int):

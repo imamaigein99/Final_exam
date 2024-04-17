@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from schemas.doctors_schema import DoctorsCreate, Doctors, doctors, is_available, DoctorsStatus
+from schemas.doctors_schema import DoctorsCreate, Doctors, doctors, is_available, DoctorsStatus, DoctorsUpdate
 
 class DoctorSerivce:
 
@@ -48,6 +48,8 @@ class DoctorSerivce:
         doctors[id] = doctor
 
         return {"ResponseCode": "00", "ResponseMessage": "Doctor Created Successfully"}
+    
+
 
     @staticmethod
     def update_doctors_status_busy(id):
@@ -57,18 +59,18 @@ class DoctorSerivce:
             doctor = doctors[id]
         
             # Check the current status of the doctor
-            if doctor.status == is_available.OPEN:
+            if doctor.status == is_available.OPEN and doctor.active == DoctorsStatus.OPEN:
                 # Update the status to "BUSY"
                 doctor.status = is_available.CLOSED
                 return {"ResponseCode": "00", "ResponseMessage": "Doctor Status Updated Successfully"}
-            elif doctor.status == is_available.CLOSED:
+            elif doctor.status == is_available.CLOSED and doctor.active == DoctorsStatus.OPEN:
                 return {"ResponseCode": "02", "ResponseMessage": "Doctor Already in Busy state"}
         else:
             # If the doctor does not exist in the dictionary
             return {"ResponseCode": "01", "ResponseMessage": "Doctor Does Not Exist"}
 
         # If the code reaches this point, it indicates an internal logic issue
-        return {"ResponseCode": "03", "ResponseMessage": "Internal Logic issue"}
+        return {"ResponseCode": "00", "ResponseMessage": f"Doctor {doctor.name} is no longer a staff"}
     
 
     @staticmethod
@@ -79,18 +81,18 @@ class DoctorSerivce:
             doctor = doctors[id]
         
             # Check the current status of the doctor
-            if doctor.status == is_available.CLOSED:
+            if doctor.status == is_available.CLOSED and doctor.active == DoctorsStatus.OPEN:
                 # Update the status to "BUSY"
                 doctor.status = is_available.OPEN
                 return {"ResponseCode": "00", "ResponseMessage": "Doctor Status Updated Successfully"}
-            elif doctor.status == is_available.OPEN:
+            elif doctor.status == is_available.OPEN and doctor.active == DoctorsStatus.OPEN:
                 return {"ResponseCode": "02", "ResponseMessage": "Doctor Already in Free state"}
         else:
             # If the doctor does not exist in the dictionary
             return {"ResponseCode": "01", "ResponseMessage": "Doctor Does Not Exist"}
 
         # If the code reaches this point, it indicates an internal logic issue
-        return {"ResponseCode": "03", "ResponseMessage": "Internal Logic issue"}
+        return {"ResponseCode": "00", "ResponseMessage": f"Doctor {doctor.name} is no longer a staff"}
     
 
     @staticmethod
@@ -115,6 +117,25 @@ class DoctorSerivce:
             return {"ResponseCode": "02", "ResponseMessage": "Doctor does not exist"}
 
 
+
+    @staticmethod
+    def update_doctors_status_id(Doctor_data: DoctorsUpdate):
+        # Check if the phone number already exists for a different doctor
+        for doctor_id, doctor in doctors.items():
+            if doctor.phone == Doctor_data.phone:
+                # If the phone number already exists for another doctor, return an error response
+                return {"ResponseCode": "01", "ResponseMessage": "Phone number already exists for another doctor"}
+
+        # If the phone number doesn't exist for another doctor, update the doctor's status
+        if Doctor_data.id in doctors:
+            doctor = doctors[Doctor_data.id]
+            doctor.name = Doctor_data.name
+            doctor.specialization = Doctor_data.specialization
+            # Return a success response
+            return {"ResponseCode": "00", "ResponseMessage": f"Doctor with ID {Doctor_data.id} updated successfully"}
+        else:
+            # If the specified doctor ID doesn't exist, return an error response
+            return {"ResponseCode": "02", "ResponseMessage": "Doctor with the specified ID does not exist"}
 
 
 
