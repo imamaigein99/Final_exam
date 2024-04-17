@@ -2,9 +2,12 @@ from pydantic import BaseModel
 from enum import Enum
 
 class is_available(str, Enum):
-    OPEN = "True"
-    CLOSED = "False"
+    OPEN = "FREE"
+    CLOSED = "BUSY"
 
+class DoctorsStatus(str, Enum):
+    OPEN = "ENABLED"
+    CLOSED = "DISABLED"
 
 class Doctors(BaseModel):
     id: int
@@ -12,6 +15,7 @@ class Doctors(BaseModel):
     specialization: str
     phone: str
     status: is_available = is_available.OPEN
+    active: DoctorsStatus = DoctorsStatus.OPEN
 
 
 class DoctorsCreate(BaseModel):
@@ -19,13 +23,14 @@ class DoctorsCreate(BaseModel):
     specialization: str
     phone: str
     status: is_available = is_available.OPEN
+    active: DoctorsStatus = DoctorsStatus.OPEN
 
 
-Doctors: dict[int, Doctors] = {
+doctors: dict[int, Doctors] = {
     0: Doctors(
-        id=1, name='Kunle Elusade', specialization='', phone='08068632113',status= 'True' ),
+        id=0, name='Kunle Elusade', specialization='', phone='08068632113',status= 'FREE', active='ENABLED'),
     1: Doctors(
-        id=2, name='Imama Igein', specialization='', phone='08068632113', status= 'True'),
+        id=1, name='Imama Igein', specialization='', phone='08068632113', status='FREE', active='ENABLED'),
     2: Doctors(
-        id=3, name='Curtis Jackson', specialization='', phone='08068632113',status='True' )
+        id=2, name='Curtis Jackson', specialization='', phone='08068632113',status='FREE', active='ENABLED')
 }
