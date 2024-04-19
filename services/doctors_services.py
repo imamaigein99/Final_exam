@@ -136,13 +136,18 @@ class DoctorSerivce:
         else:
             # If the specified doctor ID doesn't exist, return an error response
             return {"ResponseCode": "02", "ResponseMessage": "Doctor with the specified ID does not exist"}
+        
 
+    @staticmethod
+    def find_free_doctor():
+        # Initialize an empty list to store free doctors
+        free_doctors = []
 
-
-
-
-
-
+        # Iterate over the doctors dictionary to find free doctors
+        for doctor_id, doctor in doctors.items():
+            if doctor.status == is_available.OPEN and doctor.active == DoctorsStatus.OPEN:
+                return doctor
+        return None
 
 
     # @staticmethod
