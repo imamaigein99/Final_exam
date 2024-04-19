@@ -41,6 +41,27 @@ class AppointmentsSerivce:
         DoctorSerivce.update_doctors_status_busy(free_doctor.id)
         return {"ResponseCode": "00", "ResponseMessage": f"Appointment: {appointment_id} has been scheduled with {free_doctor.name}"}
 
+    @staticmethod
+    def update_appointment_status(appointment_id: int, status: AppointmentStatus):
+        if appointment_id not in appointment:
+            return {"ResponseCode": "01", "ResponseMessage": "Appointment does not exist"}
+
+        appointment_instance = appointment[appointment_id]
+
+        if status == AppointmentStatus.OPEN:
+            if appointment_instance.status == AppointmentStatus.OPEN:
+                return {"ResponseCode": "01", "ResponseMessage": "Appointment status cannot be updated to CONFIRMED again."}
+            else:
+                appointment_instance.status = AppointmentStatus.OPEN
+                return {"ResponseCode": "00", "ResponseMessage": f"Appointment: {appointment_id} updated to Confirm state."}
+        elif status == AppointmentStatus.CLOSED:
+            if appointment_instance.status == AppointmentStatus.CLOSED:
+                return {"ResponseCode": "01", "ResponseMessage": "Appointment status cannot be updated from CLOSED to CLOSED."}
+            else:
+                appointment_instance.status = AppointmentStatus.CLOSED
+                return {"ResponseCode": "00", "ResponseMessage": f"Appointment: {appointment_id} updated to Closed state."}
+        else:
+            return {"ResponseCode": "02", "ResponseMessage": "Invalid appointment status."}
 
 
 

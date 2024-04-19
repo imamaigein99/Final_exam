@@ -4,7 +4,7 @@ from enum import Enum
 
 class AppointmentStatus(str, Enum):
     OPEN = "confirmed"
-    CLOSED = "canceled"
+    CLOSED = "closed"
     PENDING = "scheduled"
 
 class Appointments(BaseModel):
@@ -37,5 +37,5 @@ appointment: dict[int, Appointments] = {
     1: Appointments(
         appointment_id=1, patient_phone='Imama Igein', doctor_name='Imama Igein', date_timer='2023-04-14 14:42', duration= '60M', reasons='routine check-up', notes='We need to run some test', location='virtual',  status=AppointmentStatus.OPEN),
     2: Appointments(
-        appointment_id=3, patient_phone='Imama Igein', doctor_name='Imama Igein', date_timer='2023-04-14 14:42', duration= '60M', reasons='routine check-up', notes='We need to run some test', location='virtual',  status=AppointmentStatus.OPEN)
+        appointment_id=2, patient_phone='Imama Igein', doctor_name='Imama Igein', date_timer='2023-04-14 14:42', duration= '60M', reasons='routine check-up', notes='We need to run some test', location='virtual',  status=AppointmentStatus.OPEN)
 }
