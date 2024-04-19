@@ -37,7 +37,7 @@ def CreateAppointment(patient_phone: str, date_timer: str, duration: str, reason
         return {'message': 'successful', 'data': data}
     except Exception as e:
         logger.error(f"Error Creating an appointment for patient {patient_phone}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=200, detail=f"Patient with {patient_phone} doesnt exist.")
 
 
 @appointment_router.post('/UpdateAppointmentStatus/{appointment_id}', status_code=200)
@@ -51,4 +51,4 @@ def update_appointment_status(appointment_id: int, status: str):
         return {'message': 'successful', 'data': data}
     except Exception as e:
         logger.error(f"Error Updating an appointment for patient {appointment_id}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=200, detail=f"Error Updating an appointment for patient {appointment_id}")

@@ -44,6 +44,41 @@ class AppointmentsSerivce:
         logger.info("Appointment created with ID %s and doctor %s", appointment_id, free_doctor.name)
         return {"ResponseCode": "00", "ResponseMessage": f"Appointment: {appointment_id} has been scheduled with {free_doctor.name}"}
 
+    
+    # @staticmethod
+    # def create_appointment(patient_phone: str, date_timer: str, duration: str, reasons: str, notes: str, location: str):
+    #     timestamp_ms = int(time.time() * 1000)
+
+    #     # Check if the phone number already exists in appointments
+    #     for appointment_id, appointment in appointments.items():
+    #         if appointment.patient_phone == patient_phone:
+    #             logger.warning("Appointment creation failed. Phone number '%s' already exists.", patient_phone)
+    #             return {"ResponseCode": "02", "ResponseMessage": "Phone number already exists. Cannot create appointment."}
+
+    #     free_doctor = DoctorSerivce.find_free_doctor()
+    #     if free_doctor is None:
+    #         logger.warning("No free doctors available at the moment.")
+    #         return {"ResponseCode": "01", "ResponseMessage": "There are no Free Doctors at the moment"}
+
+    #     appointment_id = timestamp_ms
+    #     new_appointment = Appointments(
+    #         appointment_id=appointment_id, 
+    #         patient_phone=patient_phone,
+    #         doctor_name=free_doctor.name,
+    #         date_timer=date_timer,
+    #         duration=duration,
+    #         reasons=reasons,
+    #         notes=notes,
+    #         location=location,
+    #         status="scheduled"
+    #     )
+
+    #     appointment[appointment_id] = new_appointment
+    #     DoctorSerivce.update_doctors_status_busy(free_doctor.id)
+    #     logger.info("Appointment created with ID %s and doctor %s", appointment_id, free_doctor.name)
+    #     return {"ResponseCode": "00", "ResponseMessage": f"Appointment: {appointment_id} has been scheduled with {free_doctor.name}"}
+
+
     @staticmethod
     def update_appointment_status(appointment_id: int, status: AppointmentStatus):
         if appointment_id not in appointment:
