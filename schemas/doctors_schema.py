@@ -35,9 +35,9 @@ class DoctorsUpdate(BaseModel):
 
 doctors: dict[int, Doctors] = {
     0: Doctors(
-        id=0, name='Kunle Elusade', specialization='', phone='08068632113',status= 'FREE', active='ENABLED'),
+        id=0, name='Dr Raji Victor', specialization='GP 1', phone='07066296434',status= 'FREE', active='ENABLED'),
     1: Doctors(
-        id=1, name='Imama Igein', specialization='', phone='08068632113', status='FREE', active='ENABLED'),
+        id=1, name='Dr Precious Ugochi', specialization='GP 2', phone='08023020252', status='FREE', active='ENABLED'),
     2: Doctors(
-        id=2, name='Curtis Jackson', specialization='', phone='08068632113',status='FREE', active='ENABLED')
+        id=2, name='Dr Curtis Jackson', specialization='GP 3', phone='080372600006',status='FREE', active='ENABLED')
 }

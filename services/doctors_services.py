@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from logger.logger import logger
 from schemas.doctors_schema import DoctorsCreate, Doctors, doctors, is_available, DoctorsStatus, DoctorsUpdate
 
 class DoctorSerivce:
@@ -7,8 +8,10 @@ class DoctorSerivce:
     @staticmethod
     def get_doctor_by_id(id):
         if id in doctors:
+            logger.info("Doctor with ID %s exist", id)
             return doctors[id]
-        else: 
+        else:
+            logger.error("Doctor with ID %s does not exist", id)
             return {"ResponseCode": "01", "ResponseMessage": "Doctor Does Not Exist"}
         
     @staticmethod
@@ -17,8 +20,9 @@ class DoctorSerivce:
         for doctor_id, doctor in doctors.items():
             if doctor.active == DoctorsStatus.OPEN:
                 active_doctors.append(doctor)
+        logger.info("All Active doctors fetched -- Successfully ")
         return active_doctors
-    
+    logger.error("All Active doctors fetched -- Failed")
 
     @staticmethod
     def get_doctor_all_deactive():
@@ -26,7 +30,9 @@ class DoctorSerivce:
         for doctor_id, doctor in doctors.items():
             if doctor.active == DoctorsStatus.CLOSED:
                 deactive_doctors.append(doctor)
+        logger.info("All Deactive doctors fetched -- Successfully ")        
         return deactive_doctors
+    logger.error("All Deactive doctors fetched -- Failed")
 
 
 
@@ -35,6 +41,7 @@ class DoctorSerivce:
         # Check if the phone number already exists
         for doctor_id, doctor in doctors.items():
             if doctor.phone == Doctor_data.phone:
+                logger.warning(f"Doctor with the same msisdn already exists {Doctor_data}")
                 return {"ResponseCode": "01", "ResponseMessage": "Doctor with the same msisdn already exists"}
         
         new_id = max(doctors.keys(), default=0) + 1
@@ -47,6 +54,7 @@ class DoctorSerivce:
         )
         doctors[id] = doctor
 
+        logger.info(f"Doctor Created Successfully -- {doctor.name} ")
         return {"ResponseCode": "00", "ResponseMessage": "Doctor Created Successfully"}
     
 
